@@ -1,53 +1,243 @@
-# CakePHP Application Skeleton
+# PayTabs eShop
 
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%207-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+An advanced e-commerce solution integrated with **PayTabs** for seamless and secure payment processing. This project enables users to browse products, manage their carts, and process payments efficiently using PayTabs' Hosted Payment Page API.
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 5.x.
+---
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+## Table of Contents
 
-## Installation
+1. [Project Overview](#project-overview)
+2. [Key Features](#key-features)
+3. [Technical Stack](#technical-stack)
+4. [System Architecture](#system-architecture)
+5. [Installation and Setup](#installation-and-setup)
+6. [Database Structure](#database-structure)
+7. [Detailed Implementation](#detailed-implementation)
+    - [Frontend Implementation](#frontend-implementation)
+    - [Backend Implementation](#backend-implementation)
+8. [API Endpoints](#api-endpoints)
+9. [Commit Highlights](#commit-highlights)
+10. [Testing](#testing)
+11. [Contributing](#contributing)
+12. [License](#license)
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+---
 
-If Composer is installed globally, run
+## Project Overview
 
-```bash
-composer create-project --prefer-dist cakephp/app
-```
+**PayTabs eShop** is a modern, scalable e-commerce application designed for quick implementation of online shopping functionality. It is built with **CakePHP 5.1** and **Vue.js 3**, leveraging the latest web development techniques and integrating **PayTabs** for secure payments.
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+The project focuses on modularity and clean architecture, enabling developers to extend its functionality easily.
 
-```bash
-composer create-project --prefer-dist cakephp/app myapp
-```
+---
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+## Key Features
 
-```bash
-bin/cake server -p 8765
-```
+- **Guest Checkout**: Allow users to make purchases without creating an account.
+- **Dynamic Cart Management**: Add, update, and remove items from the cart using Vue.js.
+- **Payment Gateway Integration**: Fully integrated with PayTabs Hosted Payment Page.
+- **Order Management**: View past orders, including order details, statuses, and payments.
+- **Responsive Design**: Built with **Bootstrap 5** and **FontAwesome** for a user-friendly UI.
+- **Database Transactions**: Ensure consistency during critical operations like payments and order updates.
+- **Validation and Security**:
+  - Validate customer and payment data at both frontend and backend.
+  - Use CSRF tokens and validate incoming requests.
 
-Then visit `http://localhost:8765` to see the welcome page.
+---
 
-## Update
+## Technical Stack
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
+- **Backend Framework**: CakePHP 5.1
+- **Frontend Framework**: Vue.js 3
+- **Database**: MySQL
+- **Payment Gateway**: PayTabs Hosted Payment Page API
+- **Styling**: Bootstrap 5, FontAwesome
+- **AJAX Requests**: Axios
+- **Session Management**: PHP Sessions in CakePHP
 
-## Configuration
+---
 
-Read and edit the environment specific `config/app_local.php` and set up the
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
+## System Architecture
 
-## Layout
+### Layers:
+1. **Frontend**: Built with Vue.js for reactive components like cart management and checkout forms.
+2. **API Layer**: CakePHP controllers handle frontend requests and validate data.
+3. **Business Logic**: Implemented in CakePHP models with database transactions.
+4. **Database Layer**: MySQL with migrations for schema management.
 
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+---
+
+## Installation and Setup
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/mahmouddev/paytabs-eshop.git
+   cd paytabs-eshop
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Configure Environment**:
+   - Copy `.env.example` to `.env`.
+   - Update database credentials and PayTabs API keys:
+     ```env
+     PAYTABS_PROFILE_ID=132344
+     PAYTABS_SERVER_KEY=your_server_key
+     ```
+
+4. **Run Migrations**:
+   ```bash
+   bin/cake migrations migrate
+   ```
+
+5. **Start Development Server**:
+   ```bash
+   bin/cake server
+   ```
+
+6. **Compile Frontend Assets**:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## Database Structure
+
+### Tables
+
+#### Products
+| Column       | Type    | Description                |
+|--------------|---------|----------------------------|
+| `id`         | INT     | Primary key.               |
+| `name`       | STRING  | Product name.              |
+| `category`   | STRING  | Product category.          |
+| `price`      | DECIMAL | Price of the product.      |
+| `quantity`   | INT     | Stock quantity.            |
+
+#### Orders
+| Column             | Type    | Description                          |
+|---------------------|---------|--------------------------------------|
+| `id`               | INT     | Primary key.                         |
+| `cart_id`          | STRING  | Unique identifier for the cart.      |
+| `status`           | STRING  | Status of the order (e.g., pending). |
+| `total`            | DECIMAL | Total amount of the order.           |
+| `delivery_method`  | STRING  | Shipping or Pickup option.           |
+
+#### Payments
+| Column     | Type    | Description                       |
+|------------|---------|-----------------------------------|
+| `id`       | INT     | Primary key.                     |
+| `order_id` | INT     | Associated order ID.             |
+| `status`   | STRING  | Payment status (e.g., success).  |
+
+---
+
+## Detailed Implementation
+
+### Frontend Implementation
+
+#### Cart Management
+- **Local Storage**: The cart data is stored in the browser using LocalStorage.
+- **Reactive Updates**: Vue.js components dynamically update the cart and total values.
+
+#### Checkout Form
+- **Validation**: Fields are validated dynamically using Vue.js.
+- **Shipping vs Pickup**: Conditional rendering based on the selected delivery method.
+
+---
+
+### Backend Implementation
+
+#### Validation
+- **Custom Validator**:
+  - Validates nested customer data.
+  - Ensures required fields are present.
+
+#### Payment API Integration
+1. **Initiate Payment**:
+   - Send a request to PayTabs with the order and customer details.
+   - Use the `framed` option for iframe integration.
+
+2. **Validate Payment Response**:
+   - Ensure the response is valid and from PayTabs.
+   - Update the database transactionally.
+
+---
+
+## API Endpoints
+
+### Payment Endpoints
+| Method | Endpoint             | Description                        |
+|--------|-----------------------|------------------------------------|
+| POST   | `/payments/initiate`  | Creates a new payment session.     |
+| POST   | `/payments/validate`  | Validates the payment response.    |
+
+### Order Endpoints
+| Method | Endpoint             | Description                        |
+|--------|-----------------------|------------------------------------|
+| GET    | `/orders`            | Retrieves a list of orders.        |
+| GET    | `/orders/view/{id}`  | Retrieves details of a specific order. |
+
+---
+
+## Commit Highlights
+
+- **[Initialize Payment Integration](https://github.com/mahmouddev/paytabs-eshop/commit/xyz123)**:
+  - Set up PayTabs integration.
+  - Implemented validation and payment payload generation.
+
+- **[Order Management](https://github.com/mahmouddev/paytabs-eshop/commit/xyz456)**:
+  - Added APIs for creating, listing, and viewing orders.
+  - Introduced pagination for order listings.
+
+- **[Frontend Checkout](https://github.com/mahmouddev/paytabs-eshop/commit/xyz789)**:
+  - Added dynamic form validation and shipping options.
+  - Integrated cart component with Vue.js.
+
+---
+
+## Testing
+
+1. **Unit Tests**:
+   - Validates models and controllers.
+   - Ensures data consistency with transactions.
+
+2. **Integration Tests**:
+   - Mock PayTabs API responses.
+   - Test end-to-end checkout flow.
+
+3. **Manual Testing**:
+   - Verify payment iframe loads correctly.
+   - Ensure cart data persists across sessions.
+
+---
+
+## Contributing
+
+We welcome contributions. Please follow these steps:
+
+1. **Fork the repository**.
+2. **Create a new branch**:
+   ```bash
+   git checkout -b feature-name
+   ```
+3. **Commit changes**:
+   ```bash
+   git commit -m "Add new feature"
+   ```
+4. **Push to the branch**:
+   ```bash
+   git push origin feature-name
+   ```
+5. **Open a pull request**.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
