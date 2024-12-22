@@ -11,6 +11,18 @@ namespace App\Controller;
 class ProductsController extends AppController
 {
     /**
+     * Initialize controller
+     *
+     * @return void
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->Authentication->allowUnauthenticated(['index', 'view']);
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
