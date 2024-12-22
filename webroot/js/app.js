@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <strong>E£ {{ getCartTotal() }}</strong>
                         </li>
                     </ul>
-                    <button @click="checkoutRedirect" class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+                    <button :disabled="getCartTotal() == 0" @click="checkoutRedirect" class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
                     </div>
                 </div>
             </div>
