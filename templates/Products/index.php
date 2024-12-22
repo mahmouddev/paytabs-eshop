@@ -22,7 +22,7 @@
                                     <div class="product-item">
                                         <a href="#" class="btn-wishlist"><svg width="24" height="24"><use xlink:href="#heart"></use></svg></a>
                                         <figure>
-                                            <a href="index.html" title="<?= h($product->name) ?>">
+                                            <a href="#" title="<?= h($product->name) ?>">
                                             <img src="<?= h($product->image) ?>"  class="<?= h($product->name) ?>">
                                             </a>
                                         </figure>

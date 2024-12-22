@@ -25,6 +25,7 @@ class UsersSeedSeed extends BaseSeed
             [
                 'name'     => 'User',
                 'email'    => 'admin124@example.com',
+                'role'     => 'admin',
                 'password' => (new DefaultPasswordHasher())->hash('123456'),
                 'created'  => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s'),
