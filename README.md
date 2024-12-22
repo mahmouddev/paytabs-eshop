@@ -15,11 +15,10 @@ An advanced e-commerce solution integrated with **PayTabs** for seamless and sec
 7. [Detailed Implementation](#detailed-implementation)
     - [Frontend Implementation](#frontend-implementation)
     - [Backend Implementation](#backend-implementation)
-8. [API Endpoints](#api-endpoints)
+8. [Backend routes](#backend-routes)
 9. [Commit Highlights](#commit-highlights)
-10. [Testing](#testing)
-11. [Contributing](#contributing)
-12. [License](#license)
+10. [Contributing](#contributing)
+11. [License](#license)
 
 ---
 
@@ -41,7 +40,6 @@ The project focuses on modularity and clean architecture, enabling developers to
 - **Database Transactions**: Ensure consistency during critical operations like payments and order updates.
 - **Validation and Security**:
   - Validate customer and payment data at both frontend and backend.
-  - Use CSRF tokens and validate incoming requests.
 
 ---
 
@@ -61,7 +59,7 @@ The project focuses on modularity and clean architecture, enabling developers to
 
 ### Layers:
 1. **Frontend**: Built with Vue.js for reactive components like cart management and checkout forms.
-2. **API Layer**: CakePHP controllers handle frontend requests and validate data.
+2. **I/O Layer**: CakePHP controllers handle frontend requests and validate data.
 3. **Business Logic**: Implemented in CakePHP models with database transactions.
 4. **Database Layer**: MySQL with migrations for schema management.
 
@@ -78,15 +76,19 @@ The project focuses on modularity and clean architecture, enabling developers to
 2. **Install Dependencies**:
    ```bash
    composer install
-   npm install
    ```
 
 3. **Configure Environment**:
+   - move to config directory
+   ```bash
+   cd config
+   ```
    - Copy `.env.example` to `.env`.
    - Update database credentials and PayTabs API keys:
      ```env
      PAYTABS_PROFILE_ID=132344
-     PAYTABS_SERVER_KEY=your_server_key
+     PAYTABS_KEY=your_server_key
+     PAYTABS_URL=api_url
      ```
 
 4. **Run Migrations**:
@@ -94,16 +96,15 @@ The project focuses on modularity and clean architecture, enabling developers to
    bin/cake migrations migrate
    ```
 
-5. **Start Development Server**:
+5. **Run Data Seeders**:
+   ```bash
+   bin/cake migrations seed
+   ```
+
+6. **Start Development Server**:
    ```bash
    bin/cake server
    ```
-
-6. **Compile Frontend Assets**:
-   ```bash
-   npm run dev
-   ```
-
 ---
 
 ## Database Structure
@@ -111,29 +112,36 @@ The project focuses on modularity and clean architecture, enabling developers to
 ### Tables
 
 #### Products
-| Column       | Type    | Description                |
-|--------------|---------|----------------------------|
-| `id`         | INT     | Primary key.               |
-| `name`       | STRING  | Product name.              |
-| `category`   | STRING  | Product category.          |
-| `price`      | DECIMAL | Price of the product.      |
-| `quantity`   | INT     | Stock quantity.            |
+| Column       | Type    | Description                                 |
+|--------------|---------|---------------------------------------------|
+| `id`         | INT     | Primary key.                                |
+| `name`       | STRING  | Product name.                               |
+| `price`      | DECIMAL | Price of the product.                       |
+| `image`      | STRING  | Image url of the product.                   |
+| `quantity`   | INT     | Stock quantity.                             |
 
 #### Orders
-| Column             | Type    | Description                          |
-|---------------------|---------|--------------------------------------|
-| `id`               | INT     | Primary key.                         |
-| `cart_id`          | STRING  | Unique identifier for the cart.      |
-| `status`           | STRING  | Status of the order (e.g., pending). |
-| `total`            | DECIMAL | Total amount of the order.           |
-| `delivery_method`  | STRING  | Shipping or Pickup option.           |
+| Column             | Type    | Description                           |
+|--------------------|---------|---------------------------------------|
+| `id`               | INT     | Primary key.                          |
+| `user_id`          | INT     | Associated optinal user ID.           |
+| `cart_id`          | STRING  | Unique identifier for the cart.       |
+| `guest_email`      | STRING  | Gust email.                           |
+| `guest_name`       | STRING  | Gust name.                            |
+| `guest_phone`      | STRING  | Gust phone.                           |
+| `status`           | STRING  | Status of the order (e.g., pending).  |
+| `total`            | DECIMAL | Total amount of the order.            |
+| `delivery_method`  | STRING  | Shipping or Pickup option.            |
+| `shipping_address` | STRING  | Shipping address.                     |
 
 #### Payments
-| Column     | Type    | Description                       |
-|------------|---------|-----------------------------------|
-| `id`       | INT     | Primary key.                     |
-| `order_id` | INT     | Associated order ID.             |
-| `status`   | STRING  | Payment status (e.g., success).  |
+| Column             | Type    | Description                           |
+|--------------------|---------|---------------------------------------|
+| `id`               | INT     | Primary key.                          |
+| `order_id`         | INT     | Associated order ID.                  |
+| `status`           | STRING  | Payment status (e.g., success).       |
+| `amount`           | NUMBER  | Payment amount.                       |
+| `transaction_id`   | STRING  | Paytabs transaction ref.               |
 
 ---
 
@@ -169,17 +177,17 @@ The project focuses on modularity and clean architecture, enabling developers to
 
 ---
 
-## API Endpoints
+## Backend routes
 
 ### Payment Endpoints
-| Method | Endpoint             | Description                        |
-|--------|-----------------------|------------------------------------|
-| POST   | `/payments/initiate`  | Creates a new payment session.     |
-| POST   | `/payments/validate`  | Validates the payment response.    |
+| Method | Endpoint                                 | Description                        |
+|--------|------------------------------------------|------------------------------------|
+| POST   | `/payments/initializeHostedPaymentPage`  | Creates a new payment session.     |
+| POST   | `/payments/return`                       | Validates the payment response.    |
 
 ### Order Endpoints
 | Method | Endpoint             | Description                        |
-|--------|-----------------------|------------------------------------|
+|--------|----------------------|------------------------------------|
 | GET    | `/orders`            | Retrieves a list of orders.        |
 | GET    | `/orders/view/{id}`  | Retrieves details of a specific order. |
 
@@ -198,22 +206,6 @@ The project focuses on modularity and clean architecture, enabling developers to
 - **[Frontend Checkout](https://github.com/mahmouddev/paytabs-eshop/commit/xyz789)**:
   - Added dynamic form validation and shipping options.
   - Integrated cart component with Vue.js.
-
----
-
-## Testing
-
-1. **Unit Tests**:
-   - Validates models and controllers.
-   - Ensures data consistency with transactions.
-
-2. **Integration Tests**:
-   - Mock PayTabs API responses.
-   - Test end-to-end checkout flow.
-
-3. **Manual Testing**:
-   - Verify payment iframe loads correctly.
-   - Ensure cart data persists across sessions.
 
 ---
 
