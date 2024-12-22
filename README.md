@@ -16,9 +16,8 @@ An advanced e-commerce solution integrated with **PayTabs** for seamless and sec
     - [Frontend Implementation](#frontend-implementation)
     - [Backend Implementation](#backend-implementation)
 8. [Backend routes](#backend-routes)
-9. [Commit Highlights](#commit-highlights)
-10. [Contributing](#contributing)
-11. [License](#license)
+9. [Contributing](#contributing)
+10. [License](#license)
 
 ---
 
@@ -84,11 +83,20 @@ The project focuses on modularity and clean architecture, enabling developers to
    cd config
    ```
    - Copy `.env.example` to `.env`.
-   - Update database credentials and PayTabs API keys:
+
+   - Update PayTabs API credentials:
      ```env
-     PAYTABS_PROFILE_ID=132344
+     PAYTABS_PROFILE_ID=xxxxxx
      PAYTABS_KEY=your_server_key
      PAYTABS_URL=api_url
+    ```
+
+    - Update database credentials:
+     ```app.locale.php
+     'host' => 'localhost'
+     'username' => 'db_username',
+     'password' => 'db_password',
+     'database' => 'db_name',
      ```
 
 4. **Run Migrations**:
@@ -141,7 +149,7 @@ The project focuses on modularity and clean architecture, enabling developers to
 | `order_id`         | INT     | Associated order ID.                  |
 | `status`           | STRING  | Payment status (e.g., success).       |
 | `amount`           | NUMBER  | Payment amount.                       |
-| `transaction_id`   | STRING  | Paytabs transaction ref.               |
+| `transaction_id`   | STRING  | Paytabs transaction ref.              |
 
 ---
 
@@ -177,7 +185,7 @@ The project focuses on modularity and clean architecture, enabling developers to
 
 ---
 
-## Backend routes
+## Backend routes examples
 
 ### Payment Endpoints
 | Method | Endpoint                                 | Description                        |
@@ -186,26 +194,10 @@ The project focuses on modularity and clean architecture, enabling developers to
 | POST   | `/payments/return`                       | Validates the payment response.    |
 
 ### Order Endpoints
-| Method | Endpoint             | Description                        |
-|--------|----------------------|------------------------------------|
-| GET    | `/orders`            | Retrieves a list of orders.        |
-| GET    | `/orders/view/{id}`  | Retrieves details of a specific order. |
-
----
-
-## Commit Highlights
-
-- **[Initialize Payment Integration](https://github.com/mahmouddev/paytabs-eshop/commit/xyz123)**:
-  - Set up PayTabs integration.
-  - Implemented validation and payment payload generation.
-
-- **[Order Management](https://github.com/mahmouddev/paytabs-eshop/commit/xyz456)**:
-  - Added APIs for creating, listing, and viewing orders.
-  - Introduced pagination for order listings.
-
-- **[Frontend Checkout](https://github.com/mahmouddev/paytabs-eshop/commit/xyz789)**:
-  - Added dynamic form validation and shipping options.
-  - Integrated cart component with Vue.js.
+| Method | Endpoint                                 | Description                        |
+|--------|------------------------------------------|------------------------------------|
+| GET    | `/orders`                                | Retrieves a list of orders.        |
+| GET    | `/orders/view/{id}`                      | Retrieves details of a specific order. |
 
 ---
 
