@@ -1,4 +1,4 @@
-<div id="app" class="container py-5">
+<div class="container py-5">
     <div class="row">
         <!-- Left Section: Checkout Form -->
         <div v-if="!showIFrame"  class="col-md-8">
