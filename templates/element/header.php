@@ -131,54 +131,58 @@
         </div>
       </div>
       <div class="container-fluid">
-        <div class="row py-3">
-          <div class="d-flex  justify-content-center justify-content-sm-between align-items-center">
-            <nav class="main-menu d-flex navbar navbar-expand-lg">
+  <div class="row py-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <nav class="main-menu d-flex navbar navbar-expand-lg w-100">
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-              <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-                aria-controls="offcanvasNavbar">
-                <span class="navbar-toggler-icon"></span>
-              </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header justify-content-center">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
 
-              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-body d-flex justify-content-between w-100">
+            <!-- Left Aligned Navigation Items -->
+            <ul class="navbar-nav menu-list list-unstyled d-flex gap-md-3 mb-0">
+              <li class="nav-item active">
+                <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">All products</a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Women</a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Men</a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Kids</a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Accessories</a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Brand</a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Sale</a>
+              </li>
+            </ul>
 
-                <div class="offcanvas-header justify-content-center">
-                  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-
-                <div class="offcanvas-body">
-
-                  <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
-                    <li class="nav-item active">
-                        <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">All products</a>
-                        </li>
-                    <li class="nav-item">
-                      <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Women</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                      <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Men</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Kids</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Accessories</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Brand</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="<?= Router::url(['controller' => 'Products', 'action' => 'index']); ?>" class="nav-link">Sale</a>
-                    </li>
-
-                  </ul>
-
-                </div>
-
-              </div>
+            <!-- Right Aligned Navigation Item -->
+            <ul class="navbar-nav list-unstyled mb-0">
+              <li class="nav-item">
+                <a  class="btn btn-primary" href="<?= Router::url(['controller' => 'Orders', 'action' => 'index']); ?>" class="nav-link">Orders</a>
+              </li>
+            </ul>
           </div>
         </div>
-      </div>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+
     </header>
 
