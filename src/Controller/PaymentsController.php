@@ -44,6 +44,8 @@ class PaymentsController extends AppController
 
         $this->Authentication->allowUnauthenticated(['initializeHostedPaymentPage', 'return']);
     }
+
+
     public function initializeHostedPaymentPage()
     {
 
@@ -192,7 +194,133 @@ class PaymentsController extends AppController
             ]));
 
     }
-    public function validatePaymentData(array $data)
+
+    public function return(){
+
+        // Get the POST data
+        $postData = $this->request->getData();
+
+        $isValedRequest = $this->isValidRedirect($postData);
+
+        // pr( $isValedRequest);
+        // pr( $postData);
+        // die;
+
+        // analysis the response & update order
+        if($isValedRequest){
+            $transactionRefrance = $postData['tranRef'];
+        }
+
+        $paymentInstanse = $this->Payments->find()
+                                ->where(['transaction_id' => $transactionRefrance ])
+                                ->first();
+
+        if($paymentInstanse ){
+
+            $order = $this->Orders->find()
+                            ->where(['id' => $paymentInstanse['order_id']])
+                            ->contain(['OrderItems' => ['Products']])
+                            ->first();
+
+            // Get the connection
+            $connection = ConnectionManager::get('default');
+
+            // Start the transaction
+            $connection->begin();
+
+            try {
+
+                // Update payment status
+                $this->Payments->patchEntity($paymentInstanse, ['status' => 'paid']);
+                $this->Payments->save($paymentInstanse);
+
+                if($order){
+
+                    // Update order status
+                    $this->Orders->patchEntity($order, ['status' => 'paid']);
+                    $this->Orders->save($order);
+
+                    $productIds = array_map(function ($item) {
+                        return $item->product_id;
+                    }, $order->order_items);
+
+                    // Decrement quantity
+                    // Apply to specific products with positive quantity
+                    $this->Products->updateAll(
+                        [
+                            'quantity = quantity - 1'
+                        ],
+                        [
+                            'id IN' => $productIds,
+                            'quantity >' => 0
+                        ]
+                    );
+
+                }
+
+                // Commit the transaction if everything is successful
+                $connection->commit();
+
+            }catch (\Exception $e) {
+
+                // Rollback the transaction if there was an error
+                $connection->rollback();
+
+                // Log the error for debugging
+                Log::error($e->getMessage());
+
+                $this->Flash->error('Invalid username or password');
+
+            }
+        }
+
+        // pr(compact('order' , 'postData'));
+        // die;
+
+        $this->set(compact('order' , 'postData'));
+        // clean local cart items
+        // Set a custom layout for this action
+        // $this->viewBuilder()->setLayout('blank');
+
+    }
+
+    private function isValidRedirect($postValues){
+
+        if (empty($postValues) || !array_key_exists('signature', $postValues)) {
+            return false;
+        }
+
+        $serverKey = Configure::read('Paytabs.key');
+
+        // Request body include a signature post Form URL encoded field
+        // 'signature' (hexadecimal encoding for hmac of sorted post form fields)
+        $requestSignature = $postValues["signature"];
+        unset($postValues["signature"]);
+        $fields = array_filter($postValues);
+
+        // Sort form fields
+        ksort($fields);
+
+        // Generate URL-encoded query string of Post fields except signature field.
+        $query = http_build_query($fields);
+
+        return $this->isGenuine($query, $requestSignature, $serverKey);
+    }
+
+    private function isGenuine($data, $requestSignature, $serverKey)
+    {
+        $signature = hash_hmac('sha256', $data, $serverKey);
+
+        if (hash_equals($signature, $requestSignature) === TRUE) {
+            // VALID Redirect
+            return true;
+        } else {
+            // INVALID Redirect
+            return false;
+        }
+    }
+
+    private function validatePaymentData(array $data)
     {
         $validator = new Validator();
 
