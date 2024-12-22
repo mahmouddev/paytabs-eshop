@@ -1,6 +1,7 @@
 <div id="app" class="container py-5">
     <div class="row">
         <!-- Left Section: Checkout Form -->
+        <div v-if="!showIFrame"  class="col-md-8">
             <h3 class="mb-4">Checkout</h3>
             <form @submit.prevent="proceedToPayment">
                 <!-- Delivery Option -->
@@ -86,6 +87,16 @@
             </form>
         </div>
 
+        <div v-else class="col-md-8">
+            <h3 class="mb-4">Complete Your Payment</h3>
+            <iframe
+                :src="paymentUrl"
+                width="100%"
+                height="600"
+                frameborder="0"
+                allow="payment"
+            ></iframe>
+        </div>
         <!-- Right Section: Cart Details -->
         <div class="col-md-4">
             <div id="offcanvasCart">
