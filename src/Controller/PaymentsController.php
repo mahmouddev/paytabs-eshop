@@ -70,6 +70,9 @@ class PaymentsController extends AppController
             ]));
         }
 
+        $session = $this->request->getSession();
+        $session->write('user.cart_id', $data['cart_id']);
+
         // Create an HTTP Client instance
         $http = new Client();
 
