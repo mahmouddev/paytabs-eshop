@@ -188,8 +188,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     return false;
                 }
 
-                if (this.deliveryOption === 'shipping') {
-                    return this.customer.street1 && this.customer.city && this.customer.state && this.customer.zip;
+
+                if(!this.customer.street1 || !this.customer.city || !this.customer.country || !this.customer.state || !this.customer.zip){
+                    return false;
                 }
 
                 return true;
@@ -197,13 +198,13 @@ document.addEventListener('DOMContentLoaded', function () {
             proceedToPayment() {
 
                 // Validate inputs
-                if (!this.customer.firstName || !this.customer.email || !this.customer.phone) {
+                if (!this.customer.firstName || !this.customer.lastName || !this.customer.email || !this.customer.phone) {
                     alert('Please fill in all customer information.');
                     return;
                 }
 
-                if (this.deliveryOption === 'shipping' && (!this.customer.street1 || !this.customer.city || !this.customer.country || !this.customer.state || !this.customer.zip)) {
-                    alert('Please fill in all shipping details.');
+                if (!this.customer.street1 || !this.customer.city || !this.customer.country || !this.customer.state || !this.customer.zip) {
+                    alert('Please fill in all address details.');
                     return;
                 }
 
