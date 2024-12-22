@@ -418,4 +418,9 @@ return [
         'safeTld' => env('DEBUG_KIT_SAFE_TLD', null),
         'ignoreAuthorization' => env('DEBUG_KIT_IGNORE_AUTHORIZATION', false)
     ],
+    'Paytabs' => [
+        'key' => 'SWJ992BZTN-JHGTJBWDLM-BZJKMR2ZHT',
+        'profileId' => '132344',
+        'url' => 'https://secure-egypt.paytabs.com/payment/request'
+    ]
 ];
